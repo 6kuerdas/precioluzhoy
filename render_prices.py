@@ -61,8 +61,6 @@ class State(rx.State):
         
         self.today_prices = db_manager.get_data("today")
         self.tomorrow_prices = db_manager.get_data("tomorrow")
-        print(self.today_prices, "xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        print(self.tomorrow_prices, "yyyyyyyyyyyyyyyyyyyyyyyyyyy")
         return rx.scroll_to(elem_id="focus_item_id")
 
 
@@ -135,8 +133,6 @@ rx.cond(State.hide_tomorrow, rx.vstack(
                                                 rx.cond(State.clock_icon_list[i],  
                                                         rx.text(x,white_space ="nowrap",
                                                                 color = "black",
-                                                                font_weight = "900",
-                                                                font_size = "17px",
                                                                 ),
                                                 rx.text(x,white_space ="nowrap", color = "black"))
                                                         )
@@ -148,8 +144,6 @@ rx.cond(State.hide_tomorrow, rx.vstack(
                                                             rx.text(f"{x} €/kWh", 
                                                             color = f"rgb{State.tomorrow_prices.colors[i]}",
                                                             white_space ="nowrap",
-                                                            font_size = "17px",
-                                                            font_weight = "bold",
                                                             ),
                                                             rx.text(f"{x} €/kWh", 
                                                             color = f"rgb{State.tomorrow_prices.colors[i]}",
