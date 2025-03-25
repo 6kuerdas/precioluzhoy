@@ -5,7 +5,7 @@ config = rx.Config(
     
     
     cors_allowed_origins = [
-                            "https://precioluzhoy-production-df27.up.railway.app",
+                            "https://precioluzhoy.up.railway.app",
                               "https://precioluzhoy-wheat.vercel.app/",
                             
                             ]
