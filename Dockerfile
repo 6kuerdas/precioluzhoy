@@ -14,6 +14,9 @@ RUN reflex init
 #It was hard to get this two lines right
 ENV DB_URL="sqlite:///reflex.db"
 
-CMD reflex db init && reflex db makemigrations && reflex db migrate && reflex run --env prod --backend-only
+
+CMD ["sh", "-c", "reflex db init && reflex db makemigrations && reflex db migrate && reflex run --env prod --backend-only"]
+
+#CMD reflex db init && reflex db makemigrations && reflex db migrate && reflex run --env prod --backend-only
 
 #CMD ["reflex", "run", "--env", "prod", "--backend-only"]
