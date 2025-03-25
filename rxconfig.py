@@ -8,5 +8,5 @@ config = rx.Config(
                             "https://precioluzhoy-production-6ee7.up.railway.app",
                               "https://precioluzhoy-wheat.vercel.app/",
                             
-                            "http://localhost:3000"]
+                            ]
                     )
