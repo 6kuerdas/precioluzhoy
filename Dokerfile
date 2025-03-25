@@ -1,8 +1,8 @@
 FROM python:3.13
 
-WORKDIR /errecuerdas 
+WORKDIR /precioluzhoy 
 COPY . .
-ENV VIRTUAL_ENV=/errecuerdas/.venv_docker
+ENV VIRTUAL_ENV=/precioluzhoy/.venv_docker
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python3.13 -m venv $VIRTUAL_ENV
 
