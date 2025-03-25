@@ -62,6 +62,10 @@ class State(rx.State):
         self.today_prices = db_manager.get_data("today")
         self.tomorrow_prices = db_manager.get_data("tomorrow")
 
+        print(self.today_prices, "xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print(self.tomorrow_prices, "yyyyyyyyyyyyyyyyyyyyyyyyyyy")
+
+
         return rx.scroll_to(elem_id="focus")
 
 
@@ -180,7 +184,7 @@ rx.cond(State.hide_tomorrow, rx.vstack(
                     
                     align="center",
               
-                    on_mount= State.load_data)),
+                    )),
             align="center",
             bg = "white"
 
