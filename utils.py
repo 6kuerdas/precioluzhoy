@@ -26,7 +26,6 @@ def update_prices()-> tuple[dict, list]:
         colors = gen_colors(prices)
 
         if current_date == check_date:
-
             return {"today": prices}, colors
             
         if current_date < check_date:
