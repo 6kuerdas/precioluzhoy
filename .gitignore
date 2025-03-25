@@ -5,3 +5,7 @@ assets/external/
 __pycache__/
 *.py[cod]
 build.sh
+alembic.ini
+reflex.db
+.venv
+alembic/
