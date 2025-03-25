@@ -71,7 +71,7 @@ def render_prices()->rx.Component:
 rx.vstack(
             rx.vstack(rx.text("Precio de la luz hoy", align="center", font_size = "30px", color = "black", margin_top = "30px"),
             rx.text(State.date,  align="center",font_size = "20px", color = "black"),
-            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris", on_change= State.update),
+            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris", on_change= State.update, color = "black"),
             rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
             rx.spacer(),
             rx.flex(
@@ -180,9 +180,11 @@ rx.cond(State.hide_tomorrow, rx.vstack(
                     align="center"),
                     
                     align="center",
-                    bg = "white",
+              
                     on_mount= State.load_data)),
             align="center",
+            bg = "white"
+
 
                     )
 
