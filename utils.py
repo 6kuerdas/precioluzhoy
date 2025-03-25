@@ -1,35 +1,38 @@
 import requests
 from datetime import  date
 import pandas as pd 
+import reflex as rx
 
 
 def update_prices()-> tuple[dict, list]:
     current_date = str(date.today())
     url = "https://api.esios.ree.es/archives/71/download?date_type=publicacion&end_date={}T23%3A59%3A59%2B00%3A00&locale=es&start_date={}T00%3A00%3A00%2B00%3A00".format(current_date, current_date)    
-    response = requests.get(url)
+    response =  requests.get(url)
+    print(response)
 
     f="PVPC_" + current_date + ".xls"
 
-    with open(f, "wb") as file:                                
+    outfile = rx.get_upload_dir() / f
+    with outfile.open("wb") as file:
         file.write(response.content)
         
-        data = pd.read_excel(f, skiprows=[0,1,2,3], usecols="A")
-        check_date = data['Día'].tolist()
-        check_date = str(check_date[0])
-        check_date = str(check_date[0:10])
+    data = pd.read_excel(outfile, skiprows=[0,1,2,3], usecols="A")
+    check_date = data['Día'].tolist()
+    check_date = str(check_date[0])
+    check_date = str(check_date[0:10])
 
-        data = pd.read_excel(f,skiprows=[0,1,2,3], usecols="E")
-        prices=data['Término energía PVPC\nFEU = TEU + TCU\n€/MWh consumo'].tolist()
-    
-        prices = [round(i/1000,5) for i in prices]        
+    data = pd.read_excel(outfile,skiprows=[0,1,2,3], usecols="E")
+    prices=data['Término energía PVPC\nFEU = TEU + TCU\n€/MWh consumo'].tolist()
 
-        colors = gen_colors(prices)
+    prices = [round(i/1000,5) for i in prices]        
 
-        if current_date == check_date:
-            return {"today": prices}, colors
-            
-        if current_date < check_date:
-            return {"tomorrow": prices}, colors
+    colors = gen_colors(prices)
+
+    if current_date == check_date:
+        return {"today": prices}, colors
+
+    if current_date < check_date:
+        return {"tomorrow": prices}, colors
         
 def gen_colors(prices) -> list:
     # Normalize prices between 0 and 1 for color mapping

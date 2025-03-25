@@ -1,4 +1,3 @@
-
 from utils import update_prices
 from datetime import  date, datetime,timezone
 import reflex as rx
