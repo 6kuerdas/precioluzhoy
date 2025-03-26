@@ -170,7 +170,8 @@ def render_prices()->rx.Component:
                         align="center",
                         )),
                 align="center",
-                bg = "white"
+                bg = "white",
+                on_mount=State.load_data
 
 
                         )
