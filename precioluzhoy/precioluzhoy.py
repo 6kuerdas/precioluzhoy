@@ -8,7 +8,19 @@ def index() -> rx.Component:
 
 
 app = rx.App(
-      stylesheets=[ "/css/animations.css"]  
+      stylesheets=[ "/css/animations.css"],
+
+          head_components=[
+    rx.script(src="https://www.googletagmanager.com/gtag/js?id=G-JF4HTKKJ22"),
+    rx.script(
+        """
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments)};
+                     gtag('js', new Date());
+
+                gtag('config', 'G-JF4HTKKJ22');
+                    """ 
+                )]
 )
 app.add_page(index)
 

@@ -30,20 +30,22 @@ class State(rx.State):
     def update(self):
         paris_tz = pytz.timezone("Europe/Paris")
         self.date_now = datetime.now(paris_tz)
+        if self.date_now.strftime("%H%M") =="00:00":
+            self.hide_tomorrow = False
+        if self.date_now.second % 10 == 0 and self.date_now.strftime("%H") == "21" and self.hide_tomorrow == False:
+            self.load_data()
+
 
     def load_data(self):
         paris_tz = pytz.timezone("Europe/Paris")
         self.date_now = datetime.now(paris_tz)
-
-        prices, color_list =  update_prices()
-        self.color_list = color_list
-
-        self.clock_icon_list = []
-        self.color_list = []
-        
         self.date = str(date.today())
         self.day_hour = str(self.date_now)[11:13] + ":00"
+        self.clock_icon_list = []
 
+
+        res = db_manager.get_all()
+        for i in res: print(i.date)
 
         for i in DAY_TIME:
             if i == self.day_hour:
@@ -51,25 +53,26 @@ class State(rx.State):
             else:
                 self.clock_icon_list.append(False)
 
-        if "today" in prices:
-            db_manager.save_data("today", prices["today"], color_list)
-            self.hide_tomorrow = False
+        prices, color_list, file_date =  update_prices()
+        db_manager.save_data(file_date, prices, color_list)
 
-        if "tomorrow" in prices:
-            db_manager.save_data("tomorrow", prices["tomorrow"], color_list)
+        if self.date == file_date:
+            self.today_prices = db_manager.get_data(file_date)
+            self.hide_tomorrow = False
+        elif self.date < file_date:
+            self.tomorrow_prices =db_manager.get_data(file_date)
+            self.today_prices = db_manager.get_data(self.date)
             self.hide_tomorrow = True
-        
-        self.today_prices = db_manager.get_data("today")
-        self.tomorrow_prices = db_manager.get_data("tomorrow")
+
         return rx.scroll_to(elem_id="focus_item_id")
 
 
 def render_prices()->rx.Component:
-    return rx.vstack(
-rx.vstack(
+    return rx.cond(State.is_hydrated, rx.vstack(
+    rx.vstack(
             rx.vstack(rx.text("Precio de la luz hoy", align="center", font_size = "20px", color = "black", margin_top = "10px"),
-            rx.text(State.date,  align="center",font_size = "20px", color = "black"),
-            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris", on_change= State.update, color = "black"),
+            rx.text(State.today_prices.date,  align="center", font_size = "15px", color = "black"),
+            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris",font_size = "15px", on_change= State.update, color = "black"),
             rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
             rx.spacer(),
             rx.flex(
@@ -120,57 +123,58 @@ rx.vstack(
                     bg = "white",
                     ),
 
-rx.cond(State.hide_tomorrow, rx.vstack(
-            rx.vstack(rx.text("Precio de la luz mañana", align="center", font_size = "20px", color = "black", margin_top = "10px"),
-            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris", on_change= State.update),
-            rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
-     
-            rx.flex(
-            rx.vstack(rx.foreach(DAY_TIME_PERIOD, 
-                                 lambda x, i: rx.hstack(    
-                                        rx.icon("clock-2",  color = f"rgb{State.tomorrow_prices.colors[i]}"),
-                                                        
-                                                rx.cond(State.clock_icon_list[i],  
-                                                        rx.text(x,white_space ="nowrap",
-                                                                color = "black",
-                                                                ),
-                                                rx.text(x,white_space ="nowrap", color = "black"))
-                                                        )
-                                 ),                                      
-                align= "start"),
-            
-            rx.vstack(rx.foreach(State.tomorrow_prices.prices, 
-                                 lambda x, i: rx.cond(State.clock_icon_list[i],
-                                                            rx.text(f"{x} €/kWh", 
-                                                            color = f"rgb{State.tomorrow_prices.colors[i]}",
-                                                            white_space ="nowrap",
-                                                            ),
-                                                            rx.text(f"{x} €/kWh", 
-                                                            color = f"rgb{State.tomorrow_prices.colors[i]}",
-                                                            white_space ="nowrap",
-                                                            ))),
+    rx.cond(State.hide_tomorrow, rx.vstack(
+                rx.vstack(rx.text("Precio de la luz mañana", align="center", font_size = "20px", color = "black", margin_top = "10px"),
+                          rx.text(State.tomorrow_prices.date,  align="center",font_size = "15px", color = "black"),
+                rx.moment(State.date_now, interval=1000,format="HH:mm:ss" ,font_size = "15px", tz="Europe/Paris", on_change= State.update),
+                rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
+        
+                rx.flex(
+                rx.vstack(rx.foreach(DAY_TIME_PERIOD, 
+                                    lambda x, i: rx.hstack(    
+                                            rx.icon("clock-2",  color = f"rgb{State.tomorrow_prices.colors[i]}"),
                                                             
-                        align= "end"),
+                                                    rx.cond(State.clock_icon_list[i],  
+                                                            rx.text(x,white_space ="nowrap",
+                                                                    color = "black",
+                                                                    ),
+                                                    rx.text(x,white_space ="nowrap", color = "black"))
+                                                            )
+                                    ),                                      
+                    align= "start"),
+                
+                rx.vstack(rx.foreach(State.tomorrow_prices.prices, 
+                                    lambda x, i: rx.cond(State.clock_icon_list[i],
+                                                                rx.text(f"{x} €/kWh", 
+                                                                color = f"rgb{State.tomorrow_prices.colors[i]}",
+                                                                white_space ="nowrap",
+                                                                ),
+                                                                rx.text(f"{x} €/kWh", 
+                                                                color = f"rgb{State.tomorrow_prices.colors[i]}",
+                                                                white_space ="nowrap",
+                                                                ))),
+                                                                
+                            align= "end"),
+                            align="center",
+                            justify="between",
+                            bg = "#edf9ff",
+                            min_width = "350px",
+                            flex_grow = "3",
+                            padding = "30px",
+                            border = "2px solid #3498db",
+                            border_radius = "12px",
+                            margin_bottom = "30px"
+                        ), 
+                    
+                        align="center"),
                         align="center",
-                        justify="between",
-                        bg = "#edf9ff",
-                        min_width = "350px",
-                        flex_grow = "3",
-                        padding = "30px",
-                        border = "2px solid #3498db",
-                        border_radius = "12px",
-                        margin_bottom = "30px"
-                    ), 
-                 
-                    align="center"),
-                    align="center",
-                    )),
-            align="center",
-            bg = "white"
+                        )),
+                align="center",
+                bg = "white"
 
 
-                    )
-
+                        )
+)
 
 
 

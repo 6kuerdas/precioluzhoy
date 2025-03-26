@@ -5,7 +5,7 @@ import reflex as rx
 from pathlib import Path
 
 
-def update_prices()-> tuple[dict, list]:
+def update_prices()-> tuple[dict, list, str]:
     current_date = str(date.today())
     url = "https://api.esios.ree.es/archives/71/download?date_type=publicacion&end_date={}T23%3A59%3A59%2B00%3A00&locale=es&start_date={}T00%3A00%3A00%2B00%3A00".format(current_date, current_date)    
     response =  requests.get(url)
@@ -29,11 +29,7 @@ def update_prices()-> tuple[dict, list]:
 
     colors = gen_colors(prices)
 
-    if current_date == check_date:
-        return {"today": prices}, colors
-
-    if current_date < check_date:
-        return {"tomorrow": prices}, colors
+    return prices, colors, check_date
         
 def gen_colors(prices) -> list:
     # Normalize prices between 0 and 1 for color mapping

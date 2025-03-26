@@ -7,29 +7,21 @@ def save_data(day, prices, colors):
     result = get_data(day=day)
     if not result:
         with rx.session() as session:
-            session.add( DatePrices(colors=colors, prices=prices, day=day))
+            session.add( DatePrices(colors=colors, prices=prices, date=day))
             session.commit()
-                    
-    else:
-        update_data(day, prices, colors)
-            
-                       
 
-def update_data(day, prices, colors):
+def get_data(day)->DatePrices | None:
     with rx.session() as session:
-
-        p = session.exec(DatePrices.select().where(DatePrices.day == day)).first()
-        p.prices = prices
-        p.colors = colors
-
-        session.add(p)
-        session.commit()
-        session.refresh(p)
-
-
-def get_data(day)->DatePrices:
+        result = session.exec(DatePrices.select().where(DatePrices.date == day)).first()
+        if result:
+            return result            
+        else:
+            return None           
+        
+def get_all()->list | None:
     with rx.session() as session:
-        result = session.exec(DatePrices.select().where(DatePrices.day == day)).first()
+        return session.exec(DatePrices.select()).all()    
 
-        return result
+
+
     

@@ -7,7 +7,7 @@ import reflex as rx
 from sqlalchemy.dialects.postgresql import JSONB
 
 class DatePrices(rx.Model, table=True):
-    day: str
+    date: str
     # Add other fields here
     prices: List[float] = sqlmodel.Field(
         sa_column=sqlalchemy.Column(
