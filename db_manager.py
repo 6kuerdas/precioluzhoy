@@ -23,5 +23,10 @@ def get_all()->list | None:
         return session.exec(DatePrices.select()).all()    
 
 
-
+def delete():
+    with rx.session() as session:
+        res = session.exec(DatePrices.select()).all()
+        for r in res:
+            session.delete(r)
+        session.commit()
     

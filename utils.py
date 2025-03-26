@@ -25,32 +25,32 @@ def update_prices()-> tuple[dict, list, str]:
     data = pd.read_excel(f,skiprows=[0,1,2,3], usecols="E")
     prices=data['Término energía PVPC\nFEU = TEU + TCU\n€/MWh consumo'].tolist()
 
-    prices = [round(i/1000,5) for i in prices]        
+    prices = [round(i/1000,3) for i in prices]        
+
+    for i in prices: print(i)
 
     colors = gen_colors(prices)
 
     return prices, colors, check_date
         
-def gen_colors(prices) -> list:
-    # Normalize prices between 0 and 1 for color mapping
-    min_val = min(prices)
-    max_val = max(prices)
-    normalized = [(p - min_val) / (max_val - min_val) for p in prices]
+def gen_colors(prices: list[float]) -> list[str]:
+    if not prices:
+        return []
 
-    # Generate RGB colors (Darker Green to Amber to Red)
-    colors = []
-    for n in normalized:
-        if n < 0.5:
-            # Green to Amber (start with slightly darker green and add red)
-            red = int(255 * (2 * n))  # Red increases from 0 to 255
-            green = int(225 * (1 - 2 * n))  # Amber: Green decreases from 204 to 0
-            blue = 0
-        else:
-            # Amber to Red (start with amber and add more red)
-            red = 255  # Red is always 255
-            green = int(214 * (2 - 2 * n))  # Green decreases from 204 to 0
-            blue = 0
+    sorted_prices = sorted(prices)
+    n = len(prices)
 
-        colors.append(f"({red}, {green}, {blue})")
+    low_cutoff = sorted_prices[int(n * 0.5)]
+    high_cutoff = sorted_prices[int(n * 0.67)]
 
-    return colors
+    return [
+        "rgb(0, 190, 0)" if price <= low_cutoff else
+        "rgb(255, 191, 0)" if price <= high_cutoff else
+        "rgb(230, 0, 0)"
+        for price in prices
+    ]
+
+
+
+
+

@@ -43,7 +43,6 @@ class State(rx.State):
         self.day_hour = str(self.date_now)[11:13] + ":00"
         self.clock_icon_list = []
 
-
         res = db_manager.get_all()
         for i in res: print(i.date)
 
@@ -67,8 +66,13 @@ class State(rx.State):
         return rx.scroll_to(elem_id="focus_item_id")
 
 
+    def delete(self):
+        db_manager.delete()
+
+
 def render_prices()->rx.Component:
     return rx.cond(State.is_hydrated, rx.vstack(
+        #rx.button("Delete", on_click=State.delete),
     rx.vstack(
             rx.vstack(rx.text("Precio de la luz hoy", align="center", font_size = "20px", color = "black", margin_top = "10px"),
             rx.text(State.today_prices.date,  align="center", font_size = "15px", color = "black"),
@@ -78,7 +82,7 @@ def render_prices()->rx.Component:
             rx.flex(
             rx.vstack(rx.foreach(DAY_TIME_PERIOD, 
                                  lambda x, i: rx.hstack(    
-                                        rx.icon("clock-2",  color = f"rgb{State.today_prices.colors[i]}"),
+                                        rx.icon("clock-2",  color = f"{State.today_prices.colors[i]}"),
                                                         
                                                 rx.cond(State.clock_icon_list[i],  
                                                         rx.text(x,white_space ="nowrap", color = "black", font_weight = "900",
@@ -90,9 +94,9 @@ def render_prices()->rx.Component:
             
             rx.vstack(rx.foreach(State.today_prices.prices, 
                                  lambda x, i: rx.cond(State.clock_icon_list[i],
-                                                            rx.text(f"{x} €/kWh", color = f"rgb{State.today_prices.colors[i]}", white_space ="nowrap", 
+                                                            rx.text(f"{x} €/kWh", color = f"{State.today_prices.colors[i]}", white_space ="nowrap", 
                                                                      font_size = "17px",font_weight = "900",animation = "thumbs 1.5s"),
-                                                            rx.text(f"{x} €/kWh", color = f"rgb{State.today_prices.colors[i]}", white_space ="nowrap",
+                                                            rx.text(f"{x} €/kWh", color = f"{State.today_prices.colors[i]}", white_space ="nowrap",
                                                             ))),                                                            
                         align= "end"),
                         align="center",
@@ -122,7 +126,7 @@ def render_prices()->rx.Component:
                 rx.flex(
                 rx.vstack(rx.foreach(DAY_TIME_PERIOD, 
                                     lambda x, i: rx.hstack(    
-                                            rx.icon("clock-2",  color = f"rgb{State.tomorrow_prices.colors[i]}"),
+                                            rx.icon("clock-2",  color = f"{State.tomorrow_prices.colors[i]}"),
                                                             
                                                     rx.cond(State.clock_icon_list[i],  
                                                             rx.text(x,white_space ="nowrap",
@@ -136,11 +140,11 @@ def render_prices()->rx.Component:
                 rx.vstack(rx.foreach(State.tomorrow_prices.prices, 
                                     lambda x, i: rx.cond(State.clock_icon_list[i],
                                                                 rx.text(f"{x} €/kWh", 
-                                                                color = f"rgb{State.tomorrow_prices.colors[i]}",
+                                                                color = f"{State.tomorrow_prices.colors[i]}",
                                                                 white_space ="nowrap",
                                                                 ),
                                                                 rx.text(f"{x} €/kWh", 
-                                                                color = f"rgb{State.tomorrow_prices.colors[i]}",
+                                                                color = f"{State.tomorrow_prices.colors[i]}",
                                                                 white_space ="nowrap",
                                                                 ))),
                                                                 
