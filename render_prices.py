@@ -72,11 +72,11 @@ class State(rx.State):
 
 def render_prices()->rx.Component:
     return rx.cond(State.is_hydrated, rx.vstack(
-        #rx.button("Delete", on_click=State.delete),
+        rx.button("Delete", on_click=State.delete),
     rx.vstack(
             rx.vstack(rx.text("Precio de la luz hoy", align="center", font_size = "20px", color = "black", margin_top = "10px"),
             rx.text(State.today_prices.date,  align="center", font_size = "15px", color = "black"),
-            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Paris",font_size = "15px", on_change= State.update, color = "black"),
+            rx.moment(State.date_now, interval=1000,format="HH:mm:ss" , tz="Europe/Madrid",font_size = "15px", on_change= State.update, color = "black"),
             rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
             rx.spacer(),
             rx.flex(
@@ -120,7 +120,7 @@ def render_prices()->rx.Component:
     rx.cond(State.hide_tomorrow, rx.vstack(
                 rx.vstack(rx.text("Precio de la luz mañana", align="center", font_size = "20px", color = "black", margin_top = "10px"),
                           rx.text(State.tomorrow_prices.date,  align="center",font_size = "15px", color = "black"),
-                #rx.moment(State.date_now, interval=1000,format="HH:mm:ss" ,font_size = "15px", tz="Europe/Paris", on_change= State.update),
+                #rx.moment(State.date_now, interval=1000,format="HH:mm:ss" ,font_size = "15px", tz="Europe/Madrid", on_change= State.update),
                 rx.text("Tarifa PVPC. Fuente: Red Eléctrica Española", align="center", font_size = "12px", color = "black"),
         
                 rx.flex(
