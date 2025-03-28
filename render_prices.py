@@ -72,7 +72,7 @@ class State(rx.State):
 
 def render_prices()->rx.Component:
     return rx.cond(State.is_hydrated, rx.vstack(
-        rx.button("Delete", on_click=State.delete),
+        #rx.button("Delete", on_click=State.delete),
     rx.vstack(
             rx.vstack(rx.text("Precio de la luz hoy", align="center", font_size = "20px", color = "black", margin_top = "10px"),
             rx.text(State.today_prices.date,  align="center", font_size = "15px", color = "black"),
