@@ -30,7 +30,7 @@ class State(rx.State):
     def update(self):
         madrid_tz = pytz.timezone('Europe/Madrid')
         self.date_now = datetime.now(madrid_tz)
-        if 2359 < int(self.date_now.strftime("%H%M")) < 0000:
+        if 0000 < int(self.date_now.strftime("%H%M")) < 1000:
             self.hide_tomorrow = False
         if self.date_now.second % 10 == 0 and self.date_now.strftime("%H") == "21" and self.hide_tomorrow == False:
             self.load_data()
