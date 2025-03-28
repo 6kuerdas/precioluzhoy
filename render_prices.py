@@ -28,17 +28,17 @@ class State(rx.State):
 
     @rx.event
     def update(self):
-        paris_tz = pytz.timezone("Europe/Paris")
-        self.date_now = datetime.now(paris_tz)
-        if self.date_now.strftime("%H%M") =="00:00":
+        madrid_tz = pytz.timezone('Europe/Madrid')
+        self.date_now = datetime.now(madrid_tz)
+        if 2359 < int(self.date_now.strftime("%H%M")) < 0000:
             self.hide_tomorrow = False
         if self.date_now.second % 10 == 0 and self.date_now.strftime("%H") == "21" and self.hide_tomorrow == False:
             self.load_data()
 
 
     def load_data(self):
-        paris_tz = pytz.timezone("Europe/Paris")
-        self.date_now = datetime.now(paris_tz)
+        madrid_tz = pytz.timezone('Europe/Madrid')
+        self.date_now = datetime.now(madrid_tz)
         self.date = str(date.today())
         self.day_hour = str(self.date_now)[11:13] + ":00"
         self.clock_icon_list = []
